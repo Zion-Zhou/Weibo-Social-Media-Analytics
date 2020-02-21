@@ -1,0 +1,220 @@
+---
+title: "Group Project"
+date: "2020/1/3"
+output: html_document
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+if(!require('pacman')) {
+  install.packages('pacman')
+}
+pacman::p_load(glmnet, leaps, car, tidyverse, mapproj)
+pacman::p_load(ISLR, leaps, car, tidyverse, GGally, reshape2)
+pacman::p_load(ggplot2,dplyr, DiscriMiner, caret, pROC, MASS)
+pacman::p_load(bestglm, glmnet, leaps, car, pROC, ISLR, leaps, forward,maps, GGally, dplyr,DiscriMiner, caret,MASS)
+library(psych) 
+library(dplyr)
+```
+
+# add all+log
+
+```{r}
+data1 <- read.csv("final_train_r_al.csv")
+data2 <- data1[,-c(1,15,16,17)] #delete "no_likes", "no_comments", "no_reposts"
+colnames(data1)
+colnames(data2)
+```
+
+
+
+```{r}
+Y <- data2[, 19] # extract Y
+X <- model.matrix(weight~., data=data2)[, -1]
+# get X variables as a matrix. it will also code the categorical
+# variables correctly!. The first col of model.matrix is vector 1
+colnames(X)
+```
+
+```{r}
+set.seed(200)
+fit.cv <- cv.glmnet(X, Y, alpha=1, nfolds=10 )
+#plot(fit.fl.cv$lambda) # There are 100 lambda values used
+fit.cv$cvm # the mean cv error for each lambda
+#plot(fit.fl.cv$lambda, fit.fl.cv$cvm, xlab="lambda", ylab="mean cv errors")
+fit.cv$lambda.min # lambda.min returns the min point amoth all the cvm.
+fit.cv$nzero # number of non-zero coeff's returned for each lambda
+```
+
+
+```{r}
+coef.min <- coef(fit.cv, s="lambda.min") #s=c("lambda.1se","lambda.min") or lambda value
+coef.min <- coef.min[which(coef.min !=0),] # get the non-zero coefficients
+var.min <- rownames(as.matrix(coef.min)) # output the names
+lm.input <- as.formula(paste("weight", "~", paste(var.min[-1], collapse = "+"))) 
+lm.input
+```
+
+```{r}
+fit.min.lm <- lm(lm.input, data=data2)
+lm.output <- coef(fit.min.lm) # output lm estimates
+summary(fit.min.lm)
+```
+
+Improving model
+
+```{r}
+#delete produc_score
+fit1.1 <- lm(weight ~ blogger_gender + blogger_tag + blogger_follows + blogger_fans + blogger_posts + brand_gender + brand_follows + brand_fans + 
+brand_posts + brand_hot_topic + post + picture + video + no_topics + no_related_accounts + product_price + product_popularity, data=data2)
+summary(fit1.1)
+```
+```{r}
+#delete product_popularity 
+fit1.2 <- lm(weight ~ blogger_gender + blogger_tag + blogger_follows + blogger_fans + blogger_posts + brand_gender + brand_follows + brand_fans + 
+brand_posts + brand_hot_topic + post + picture + video + no_topics + no_related_accounts + product_price, data=data2)
+summary(fit1.2)
+```
+
+```{r}
+#delete brand_hot_topic
+fit1.3 <- lm(weight ~ blogger_gender + blogger_tag + blogger_follows + blogger_fans + blogger_posts + brand_gender + brand_follows + brand_fans + 
+brand_posts + post + picture + video + no_topics + no_related_accounts + product_price, data=data2)
+summary(fit1.3)
+```
+
+```{r}
+#delete no_topics
+fit1.4 <- lm(weight ~ blogger_gender + blogger_tag + blogger_follows + blogger_fans + blogger_posts + brand_gender + brand_follows + brand_fans + 
+brand_posts + post + picture + video +  no_related_accounts + product_price, data=data2)
+summary(fit1.4)
+```
+
+Adjusted R-squared is 0.4219.
+
+# pca+log
+```{r}
+data1 <- read.csv("final_train_r_pl.csv")
+data3 <- data1[,-c(1,15,16,17)] #delete "no_likes", "no_comments", "no_reposts"
+colnames(data1)
+colnames(data3)
+```
+
+
+```{r}
+Y <- data3[, 19] # extract Y
+X <- model.matrix(weight~., data=data3)[, -1]
+# get X variables as a matrix. it will also code the categorical
+# variables correctly!. The first col of model.matrix is vector 1
+colnames(X)
+```
+
+
+```{r}
+set.seed(200)
+fit.cv <- cv.glmnet(X, Y, alpha=1, nfolds=10 )
+#plot(fit.fl.cv$lambda) # There are 100 lambda values used
+fit.cv$cvm # the mean cv error for each lambda
+#plot(fit.fl.cv$lambda, fit.fl.cv$cvm, xlab="lambda", ylab="mean cv errors")
+fit.cv$lambda.min # lambda.min returns the min point amoth all the cvm.
+fit.cv$nzero # number of non-zero coeff's returned for each lambda
+```
+
+
+```{r}
+coef.min <- coef(fit.cv, s="lambda.min") #s=c("lambda.1se","lambda.min") or lambda value
+coef.min <- coef.min[which(coef.min !=0),] # get the non-zero coefficients
+var.min <- rownames(as.matrix(coef.min)) # output the names
+lm.input <- as.formula(paste("weight", "~", paste(var.min[-1], collapse = "+"))) 
+lm.input
+```
+
+```{r}
+fit.min.lm <- lm(lm.input, data=data3)
+lm.output <- coef(fit.min.lm) # output lm estimates
+summary(fit.min.lm)
+```
+
+Improving model
+
+```{r}
+#delete produc_score
+fit2.1 <- lm(weight ~ blogger_gender + blogger_tag + blogger_follows + blogger_fans + 
+    blogger_posts + brand_gender + brand_follows + brand_fans + 
+    brand_posts + brand_hot_topic + post + picture + video + 
+    no_topics + no_related_accounts + product_price + product_popularity, data=data3)
+summary(fit2.1)
+```
+```{r}
+#delete no_topics
+fit2.2 <- lm(weight ~ blogger_gender + blogger_tag + blogger_follows + blogger_fans + 
+    blogger_posts + brand_gender + brand_follows + brand_fans + 
+    brand_posts + brand_hot_topic + post + picture + video + 
+     no_related_accounts + product_price + product_popularity, data=data3)
+summary(fit2.2)
+```
+
+Adjusted R-squared is 0.427.
+
+# like+log
+```{r}
+data1 <- read.csv("final_train_r_ll.csv")
+data4 <- data1[,-c(1,15,16,17)] #delete "no_likes", "no_comments", "no_reposts"
+colnames(data4)
+colnames(data4)
+```
+
+
+```{r}
+Y <- data4[, 19] # extract Y
+X <- model.matrix(weight~., data=data4)[, -1]
+# get X variables as a matrix. it will also code the categorical
+# variables correctly!. The first col of model.matrix is vector 1
+colnames(X)
+```
+
+
+```{r}
+set.seed(200)
+fit.cv <- cv.glmnet(X, Y, alpha=1, nfolds=10 )
+#plot(fit.fl.cv$lambda) # There are 100 lambda values used
+fit.cv$cvm # the mean cv error for each lambda
+#plot(fit.fl.cv$lambda, fit.fl.cv$cvm, xlab="lambda", ylab="mean cv errors")
+fit.cv$lambda.min # lambda.min returns the min point amoth all the cvm.
+fit.cv$nzero # number of non-zero coeff's returned for each lambda
+```
+
+
+```{r}
+coef.min <- coef(fit.cv, s="lambda.min") #s=c("lambda.1se","lambda.min") or lambda value
+coef.min <- coef.min[which(coef.min !=0),] # get the non-zero coefficients
+var.min <- rownames(as.matrix(coef.min)) # output the names
+lm.input <- as.formula(paste("weight", "~", paste(var.min[-1], collapse = "+"))) 
+lm.input
+```
+
+```{r}
+fit.min.lm <- lm(lm.input, data=data4)
+lm.output <- coef(fit.min.lm) # output lm estimates
+summary(fit.min.lm)
+```
+
+Improving model
+
+```{r}
+#delete produc_score
+fit3.1 <- lm(weight ~ blogger_gender + blogger_tag + blogger_follows + blogger_fans + 
+    blogger_posts + brand_gender + brand_follows + brand_fans + 
+    brand_posts + brand_hot_topic + post + picture + video + 
+    no_topics + no_related_accounts + product_price + product_popularity, data=data4)
+summary(fit3.1)
+```
+```{r}
+#delete no_topics
+fit3.2 <- lm(weight ~ blogger_gender + blogger_tag + blogger_follows + blogger_fans + 
+    blogger_posts + brand_gender + brand_follows + brand_fans + 
+    brand_posts + brand_hot_topic + post + picture + video + 
+     no_related_accounts + product_price + product_popularity, data=data4)
+summary(fit3.2)
+```
+
+Adjusted R-squared is 0.427.

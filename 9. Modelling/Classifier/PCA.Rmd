@@ -1,0 +1,27 @@
+---
+title: "pca"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data <- read.csv('cleaned_train.csv')
+```
+
+```{r}
+likes = data$no_likes
+comments = data$no_comments
+reposts = data$no_reposts
+```
+
+```{r}
+pca1 <- prcomp(data[15:17], scale = TRUE)
+pca1
+```
+
+```{r}
+summary(pca1)
+```
