@@ -25,7 +25,7 @@ Append 50 medical beauty brands and domestic makeup brands, and drop duplicates.
 ## Folder 3: Weibo Post Spider:
 1.Python Code: weibo.py
 Weibo Post Spider: Detailed description is given by “README_Weibo Post Spider.md”. “requirements.txt” specifies the version of the package used. “config.json” initializes the spider, please specify the name of the text file including the uids of the bloggers  in this file.
-Crawl the posts of the 2788bloggers for the year of 2019.
+Crawl the posts of the 2788bloggers for the year of 2019.   
 2.Python Code: UID Split.ipynb
 Split the union uid list given in the text file “uid.txt” to crawl the data separately.
 
@@ -35,51 +35,51 @@ Check the omitted posts in the crawling process, and then update the uid lists.
 
 ## Folder 5: Product Identifier and Tmall Spider
 1.Python Code: Product Brand Identification in Post.ipynb
-Product Name Identifier: Apply the customized dictionary of brand names, stop words, and end words. By constraining the word counts between the brand names and the end words, identify the product name in the post.
+Product Name Identifier: Apply the customized dictionary of brand names, stop words, and end words. By constraining the word counts between the brand names and the end words, identify the product name in the post.   
 2.Python Code: Product Scrapy With T-Mall.ipynb
-T-Mall Product Information Spider: Crawl the product information from T-Mall, including product name posted on T-Mall, brand name, product price, popularity, product score, positive comment and negative comment.
+T-Mall Product Information Spider: Crawl the product information from T-Mall, including product name posted on T-Mall, brand name, product price, popularity, product score, positive comment and negative comment.   
 3.Python Code: Product Brand Re-Identification.ipynb
 Product Name Validation: Check whether the product name crawled from T-Mall contain the brand name in the brand dictionary, if not, remove the corresponding product record.
 
 ## Folder 6: Weibo Brand Account Spider
 1.Python Code: Brand Weibo Account.ipynb
-Weibo Brand Account Spider: Impute missing brand names first, and then crawl the brand account, starting from Chinese names and then move on to English names. Record the crawled brand names and inaccessible brand names.
+Weibo Brand Account Spider: Impute missing brand names first, and then crawl the brand account, starting from Chinese names and then move on to English names. Record the crawled brand names and inaccessible brand names.   
 2.Python Code: Brand Weibo Account Double-Check.ipynb
 Check the missing brands omitted in the crawling process.
 
 ## Folder 7: Baidu Index Spider
 1.Python Code: Baidu Index.ipynb
-Baidu Index Spider: Search for daily Baidu index of a brand. If a brand has Baidu index for both its Chinese name and English name, take the maximum of the two as the integrated index. Detailed description is given by “README_Baidu Index.md”. 
+Baidu Index Spider: Search for daily Baidu index of a brand. If a brand has Baidu index for both its Chinese name and English name, take the maximum of the two as the integrated index. Detailed description is given by “README_Baidu Index.md”.    
 2. Python Code: get_index.py, config.py
 Define a class object for getting Baidu index, and configure for the spider.
 
 ## Folder 8: Weibo Supper Topic Spider 
 1.Python Code: Super Topic.ipynb
-Weibo Supper Topic Spider: Crawl the posts of a supper topic, the maximum post number is 5000. Detailed description is given by “README_Weibo Supper Topic Spider.md”.
+Weibo Supper Topic Spider: Crawl the posts of a supper topic, the maximum post number is 5000. Detailed description is given by “README_Weibo Supper Topic Spider.md”.   
 2.Python Code: seg.py
-Text analytics and sentiment analysis for contents related to a supper topic on Weibo.
+Text analytics and sentiment analysis for contents related to a supper topic on Weibo.   
 3.Python Code: excelSave.py
 Define a class object to execute statements on a batch of excel workbooks and sheets.
 
 ## Modelling
 ### Sub-Folder: Classifier
 1.R Code: PCA.rmd
-Perform principal component analysis on the number of likes, comments and reposts to obtain the loadings for PC1.
+Perform principal component analysis on the number of likes, comments and reposts to obtain the loadings for PC1.   
 2.Python Code: Data Pre-processing.ipynb
 Perform the following procedures for data pre-processing: 
 - Dump string variables;
 - Remove lottery posts by using keywords (outliers with extremely large value of likes, comments and reposts);
 - Convert un-structured data into structured data;
-- Divide posts into 3 classes based upon the promotion performance by using K-Means algorithm, in which the response is the log value of the number of likes, the log value of PCA on the number of likes, comments and reposts, and the log value of the summation of the number of likes, comments and reposts.
+- Divide posts into 3 classes based upon the promotion performance by using K-Means algorithm, in which the response is the log value of the number of likes, the log value of PCA on the number of likes, comments and reposts, and the log value of the summation of the number of likes, comments and reposts.   
 3.Python Code: Model Selection.ipynb
 Model selection among multiple classifiers, including XGBoost, Gaussian Naïve Bayes, Logit Model, Random Forest, Balanced Bagging, Catboost. The optimal one with the highest kappa score is XGBoost.
-Tune parameters for XGBoost, in terms of the depth of the tree and the number of estimator in each node of the tree.
+Tune parameters for XGBoost, in terms of the depth of the tree and the number of estimator in each node of the tree.   
 4.Python Code: XGBoost_Log Likes.ipynb, XGBoost_Log PCA.ipynb, XGBoost_Log Add. ipynb
 Train XGBoost classifier with tuned parameters based upon the previous procedure, among which when using the log value of the summation of the number of likes, comments and reposts, the classifier has the best superior.
 Make recommendation for Origin in terms of bloggers.
 ### Sub-Folder: Regression
 1.R Code: Linear Regression.rmd
-Apply linear regression to three types of response variable.
+Apply linear regression to three types of response variable.   
 2.Python Code: Random Forest-Regression.ipynb
 Apply random forecast regression to three types of response variable.
 
